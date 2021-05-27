@@ -1,0 +1,43 @@
+{
+  "remoteClasses": [
+    {
+      "name": "FaceRecognition",
+      "extends": "OpenCVFilter",
+      "doc": "FaceRecognition interface. Documentation about the module",
+      "constructor": {
+	"doc": "Create an element",
+	"params": [
+	  {
+	    "name": "mediaPipeline",
+	    "doc": "the parent :rom:cls:`MediaPipeline`",
+	    "type": "MediaPipeline",
+	    "final": true
+	  }
+	]
+      },
+      "methods": [
+        {
+          "name": "setConfig",
+          "doc": "Set config",
+          "params": [
+            {
+              "name": "path",
+              "doc": "path diretory",
+              "type": "String"
+            },
+            {
+              "name": "opFilter",
+              "doc": "Option of filter",
+              "type": "int"
+            },
+            {
+              "name": "newPerson",
+              "doc": "New person",
+              "type": "String"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

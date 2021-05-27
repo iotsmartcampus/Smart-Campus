@@ -1,0 +1,33 @@
+{
+  "remoteClasses": [
+    {
+      "name": "MaskDetection",
+      "extends": "OpenCVFilter",
+      "doc": "MaskDetection interface. Documentation about the module",
+      "constructor": {
+	"doc": "Create an element",
+	"params": [
+	  {
+	    "name": "mediaPipeline",
+	    "doc": "the parent :rom:cls:`MediaPipeline`",
+	    "type": "MediaPipeline",
+	    "final": true
+	  }
+	]
+      },
+    "methods": [
+        {
+          "name": "setConfig",
+          "doc": "Sets Configurations",
+          "params": [
+            {
+              "name": "path",
+              "doc": "path diretory",
+              "type": "String"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "kurento-utils",
+  "homepage": "https://github.com/Kurento/kurento-utils-js",
+  "version": "6.15.0",
+  "_release": "6.15.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "6.15.0",
+    "commit": "119b85b3fbd68536d5ad0b8bc7d56e701ea0c7b3"
+  },
+  "_source": "https://github.com/Kurento/kurento-utils-js.git",
+  "_target": "*",
+  "_originalSource": "git+https://github.com/Kurento/kurento-utils-js.git"
+}
