@@ -115,17 +115,27 @@ wss.on('connection', function (ws, req) {
         switch (message.id) {
             case 'start':
                 sessionId = request.session.id;
-                start(sessionId, ws, message.sdpOffer, function (error, sdpAnswer) {
+                start(sessionId, ws, message.sdpOffer, function (error, type, data) {
                     if (error) {
                         return ws.send(JSON.stringify({
                             id: 'error',
                             message: error
                         }));
                     }
-                    ws.send(JSON.stringify({
-                        id: 'startResponse',
-                        sdpAnswer: sdpAnswer
-                    }));
+                    switch (type) {
+                        case 'sdpAnswer':
+                            ws.send(JSON.stringify({
+                                id: 'startResponse',
+                                sdpAnswer: data
+                            }));
+                            break;
+                        case 'maskDetected':
+                            ws.send(JSON.stringify({
+                                id: 'maskDetected',
+                                data: data
+                            }));
+                            break;
+                    }
                 });
                 break;
 
@@ -190,53 +200,57 @@ function start(sessionId, ws, sdpOffer, callback) {
             }
             pipeline.create("PlayerEndpoint", { uri: urlVideo }, function (error, player) {
 
-                createMediaElements(pipeline, ws, function (error, webRtcEndpoint, filter) {
-                    if (error) {
-                        pipeline.release();
-                        return callback(error);
-                    }
+		    createMediaElements(pipeline, ws, function (error, webRtcEndpoint, filter) {
+		        if (error) {
+		            pipeline.release();
+		            return callback(error);
+		        }
 
-                    if (candidatesQueue[sessionId]) {
-                        while (candidatesQueue[sessionId].length) {
-                            var candidate = candidatesQueue[sessionId].shift();
-                            webRtcEndpoint.addIceCandidate(candidate);
-                        }
-                    }
+		        if (candidatesQueue[sessionId]) {
+		            while (candidatesQueue[sessionId].length) {
+		                var candidate = candidatesQueue[sessionId].shift();
+		                webRtcEndpoint.addIceCandidate(candidate);
+		            }
+		        }
 
-                    connectMediaElements(player, webRtcEndpoint, filter, function (error) {
-                        if (error) {
-                            pipeline.release();
-                            return callback(error);
-                        }
+		        connectMediaElements(player, webRtcEndpoint, filter, function (error) {
+		            if (error) {
+		                pipeline.release();
+		                return callback(error);
+		            }
 
-                        webRtcEndpoint.on('OnIceCandidate', function (event) {
-                            var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-                            ws.send(JSON.stringify({
-                                id: 'iceCandidate',
-                                candidate: candidate
-                            }));
-                        });
+		            webRtcEndpoint.on('OnIceCandidate', function (event) {
+		                var candidate = kurento.getComplexType('IceCandidate')(event.candidate);
+		                ws.send(JSON.stringify({
+		                    id: 'iceCandidate',
+		                    candidate: candidate
+		                }));
+		            });
 
-                        webRtcEndpoint.processOffer(sdpOffer, function (error, sdpAnswer) {
-                            if (error) {
-                                pipeline.release();
-                                return callback(error);
-                            }
+		            filter.on('MaskDetected', function (data) {
+		                return callback(null, 'maskDetected', data);
+		            });
 
-                            sessions[sessionId] = {
-                                'pipeline': pipeline,
-                                'webRtcEndpoint': webRtcEndpoint
-                            }
-                            return callback(null, sdpAnswer);
-                        });
+		            webRtcEndpoint.processOffer(sdpOffer, function (error, sdpAnswer) {
+		                if (error) {
+		                    pipeline.release();
+		                    return callback(error);
+		                }
 
-                        webRtcEndpoint.gatherCandidates(function (error) {
-                            if (error) {
-                                return callback(error);
-                            }
-                        });
-                    });
-                });
+		                sessions[sessionId] = {
+		                    'pipeline': pipeline,
+		                    'webRtcEndpoint': webRtcEndpoint
+		                }
+		                return callback(null, 'sdpAnswer', sdpAnswer);
+		            });
+
+		            webRtcEndpoint.gatherCandidates(function (error) {
+		                if (error) {
+		                    return callback(error);
+		                }
+		            });
+		        });
+		    });
             });
         });
     });
@@ -319,11 +333,11 @@ function connectMediaElements(player, webRtcEndpoint, filter, callback) {
         //return callback(error);
         //}
 
-        player.play(function (error) {
-            if (error) return onError(error);
+         player.play(function (error) {
+             if (error) return onError(error);
 
-            console.log("Player playing ...");
-        });
+             console.log("Player playing ...");
+         });
 
         filter.setConfig("/home/david/Documentos/SmartCampus/kurento", function () {
             //console.log("Set Text Called");

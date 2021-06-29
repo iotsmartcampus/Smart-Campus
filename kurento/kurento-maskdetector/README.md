@@ -7,22 +7,25 @@
 
 Copyright © 2013-2016 [Kurento]. Licensed under [Apache 2.0 License].
 
-kurento-module-maskdetection-js
-===============
+kurento-chroma
+==============
 
-This repository host the auto-generated JavaScript client for [Kurento] module "maskdetection".
+Kurento Java Tutorial: WebRTC in loopback with chroma filter.
 
-Module "maskdetection" description: 
+Running this tutorial
+---------------------
+
+In order to run this tutorial, please read the following [instructions].
 
 What is Kurento
 ---------------
 
-Kurento is an open source software project providing a platform suitable 
+Kurento is an open source software project providing a platform suitable
 for creating modular applications with advanced real-time communication
 capabilities. For knowing more about Kurento, please visit the Kurento
 project website: http://www.kurento.org.
 
-Kurento is part of [FIWARE]. For further information on the relationship of 
+Kurento is part of [FIWARE]. For further information on the relationship of
 FIWARE and Kurento check the [Kurento FIWARE Catalog Entry]
 
 Kurento is part of the [NUBOMEDIA] research initiative.
@@ -112,6 +115,8 @@ Before asking for support, please read first the [Kurento Netiquette Guidelines]
 [Apache 2.0 License]: http://www.apache.org/licenses/LICENSE-2.0
 [NUBOMEDIA]: http://www.nubomedia.eu
 [StackOverflow]: http://stackoverflow.com/search?q=kurento
+[Read-the-docs]: http://read-the-docs.readthedocs.org/
 [readthedocs.org]: http://kurento.readthedocs.org/
 [Open API specification]: http://kurento.github.io/doc-kurento/
 [apiary.io]: http://docs.streamoriented.apiary.io/
+[instructions]: http://www.kurento.org/docs/current/tutorials/node/module-chromafilter.html

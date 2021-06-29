@@ -17,6 +17,12 @@ namespace maskdetection
 class MaskDetectionOpenCVImpl : public virtual OpenCVProcess
 {
 
+public:
+
+  // TODO: Following is a kludge to get correct shared_from_this()
+  //       from the ArMarkerdetectorImpl class inherited from this.
+  virtual std::shared_ptr<MediaObject> getSharedFromThis()=0;
+
 private:
   std::string path;
 
@@ -29,6 +35,8 @@ public:
   virtual void process (cv::Mat &mat);
 
   void setConfig(const std::string &path);
+
+  sigc::signal<void, MaskDetected> signalMaskDetected;
 
 };
 

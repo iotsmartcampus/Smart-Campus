@@ -51,6 +51,9 @@ ws.onmessage = function(message) {
 		}
 		onError('Error message from server: ' + parsedMessage.message);
 		break;
+	case 'maskDetected':
+		maskDetected(parsedMessage);
+		break;
 	case 'iceCandidate':
 		webRtcPeer.addIceCandidate(parsedMessage.candidate)
 		break;
@@ -83,7 +86,10 @@ function start() {
       localVideo: videoInput,
       remoteVideo: videoOutput,
       onicecandidate : onIceCandidate
-    }
+	}
+	
+	//WebRtcPeerRecvonly	--camera IP
+	//WebRtcPeerSendrecv    --webcan
 
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) return onError(error);
@@ -99,6 +105,10 @@ function onIceCandidate(candidate) {
 	      candidate : candidate
 	   };
 	   sendMessage(message);
+}
+
+function maskDetected(message) {
+	console.log("License mask detected " + message.data.mask);
 }
 
 function onOffer(error, offerSdp) {

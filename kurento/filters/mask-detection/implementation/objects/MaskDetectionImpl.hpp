@@ -49,6 +49,8 @@ public:
 
   virtual ~MaskDetectionImpl() = default;
 
+  virtual std::shared_ptr<MediaObject> getSharedFromThis() { return shared_from_this(); }
+
   /* Next methods are automatically implemented by code generator */
   virtual bool connect (const std::string &eventType, std::shared_ptr<EventHandler> handler);
   virtual void invoke (std::shared_ptr<MediaObjectImpl> obj,
@@ -58,6 +60,8 @@ public:
   virtual void Serialize (JsonSerializer &serializer);
 
   virtual void setConfig(const std::string &path);
+
+  //sigc::signal<void, MaskDetected> signalMaskDetected;
 
 private:
 

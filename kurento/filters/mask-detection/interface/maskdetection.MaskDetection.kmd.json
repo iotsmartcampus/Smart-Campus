@@ -27,7 +27,24 @@
             }
           ]
         }
+      ],
+      "events": [
+        "MaskDetected"
       ]
+    }
+  ],
+	"events": [
+    {
+      "properties": [
+        {
+          "name": "mask",
+          "doc": "Mask identification",
+          "type": "String"
+        }
+      ],
+      "extends": "Media",
+      "name": "MaskDetected",
+      "doc": "Event Mask Detected"
     }
   ]
 }
