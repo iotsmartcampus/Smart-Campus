@@ -117,20 +117,30 @@ wss.on('connection', function(ws, req) {
 
         switch (message.id) {
         case 'start':
-            sessionId = request.session.id;
-            start(sessionId, ws, message.sdpOffer, function(error, sdpAnswer) {
-                if (error) {
-                    return ws.send(JSON.stringify({
-                        id : 'error',
-                        message : error
-                    }));
-                }
-                ws.send(JSON.stringify({
-                    id : 'startResponse',
-                    sdpAnswer : sdpAnswer
-                }));
-            });
-            break;
+                sessionId = request.session.id;
+                start(sessionId, ws, message.sdpOffer, function (error, type, data) {
+                    if (error) {
+                        return ws.send(JSON.stringify({
+                            id: 'error',
+                            message: error
+                        }));
+                    }
+                    switch (type) {
+                        case 'sdpAnswer':
+                            ws.send(JSON.stringify({
+                                id: 'startResponse',
+                                sdpAnswer: data
+                            }));
+                            break;
+                        case 'idPerson':
+                            ws.send(JSON.stringify({
+                                id: 'idPerson',
+                                data: data
+                            }));
+                            break;
+                    }
+                });
+                break;
 
         case 'cadastrar':
             nameCadFilter = message.name;
@@ -238,6 +248,10 @@ pipeline.create("PlayerEndpoint", {uri: urlVideo}, function(error, player){
                         }));
                     });
 
+		    filter.on('IdPerson', function (data) {
+		                return callback(null, 'idPerson', data);
+		            });
+
                     webRtcEndpoint.processOffer(sdpOffer, function(error, sdpAnswer) {
                         if (error) {
                             pipeline.release();
@@ -248,7 +262,7 @@ pipeline.create("PlayerEndpoint", {uri: urlVideo}, function(error, player){
                             'pipeline' : pipeline,
                             'webRtcEndpoint' : webRtcEndpoint
                         }
-                        return callback(null, sdpAnswer);
+                        return callback(null, 'sdpAnswer', sdpAnswer);
                     });
 
                     webRtcEndpoint.gatherCandidates(function(error) {

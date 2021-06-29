@@ -47,6 +47,7 @@ int boolInit = 1;
 vector<string> pastas;
 Ptr<FaceRecognizer> modelXml;
 CascadeClassifier face_cascade;
+string idPerson = "";
 
 void loadDir(){
 
@@ -118,7 +119,7 @@ void initdata(cv::Mat &mat)
 	putText(mat, "Treinamento Concluido", Point(100, 100), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255),4,8);
 }
 
-void fun(Mat& mat, CascadeClassifier& face_cascade, Ptr<FaceRecognizer> model)
+string fun(Mat& mat, CascadeClassifier& face_cascade, Ptr<FaceRecognizer> model)
 {
 	vector<Rect> faces;
 	int faceSize = 0;
@@ -136,12 +137,15 @@ void fun(Mat& mat, CascadeClassifier& face_cascade, Ptr<FaceRecognizer> model)
 		model->predict(predect,label, predectnumber);
 		rectangle(mat, Point(faces[i].x, faces[i].y), Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height),
 		Scalar(0, 255, 0), 1, 8);
-		if (predectnumber>70)
+		if (predectnumber>70){
 			putText(mat, pastas[label], Point(faces[i].x, faces[i].y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 4, 8);
-		else
-			putText(mat, "Desconhecido", Point(faces[i].x, faces[i].y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 255, 255),4,8);
-		
+			return pastas[label];
+		}else{
+			putText(mat, "Unknown", Point(faces[i].x, faces[i].y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 255, 255),4,8);
+			return "Unknown";
+		}
 	}
+	return "";
 }
 
 void FaceRecognitionOpenCVImpl::process (cv::Mat &mat)
@@ -171,7 +175,14 @@ void FaceRecognitionOpenCVImpl::process (cv::Mat &mat)
 				face_cascade.load(pathDiretory+"/haarcascade_frontalface_alt.xml");
 				boolInit = 0;
 			}
-		  	fun(mat, face_cascade,modelXml);
+		  	idPerson = fun(mat, face_cascade,modelXml);
+			if(idPerson != ""){
+				try {
+					IdPerson event(getSharedFromThis(), IdPerson::getName(), idPerson);
+					signalIdPerson(event);
+				} catch (std::bad_weak_ptr &e) {
+				}
+			}
 			break;
 		default:
 			boolInit = 1;

@@ -17,6 +17,12 @@ namespace facerecognition
 class FaceRecognitionOpenCVImpl : public virtual OpenCVProcess
 {
 
+public:
+
+  // TODO: Following is a kludge to get correct shared_from_this()
+  //       from the ArMarkerdetectorImpl class inherited from this.
+  virtual std::shared_ptr<MediaObject> getSharedFromThis()=0;
+
 private:
   std::string path;
   int opFilter;
@@ -31,6 +37,8 @@ public:
   virtual void process (cv::Mat &mat);
 
   void setConfig(const std::string &path, const int opFilter, const std::string &newPerson);
+
+  sigc::signal<void, IdPerson> signalIdPerson;
 
 
 };

@@ -51,6 +51,9 @@ ws.onmessage = function(message) {
 		}
 		onError('Error message from server: ' + parsedMessage.message);
 		break;
+	case 'idPerson':
+		idPerson(parsedMessage);
+		break;
 	case 'iceCandidate':
 		webRtcPeer.addIceCandidate(parsedMessage.candidate)
 		break;
@@ -113,6 +116,9 @@ function start() {
       onicecandidate : onIceCandidate
     }
 
+    //WebRtcPeerRecvonly	--camera IP
+    //WebRtcPeerSendrecv    --webcan
+
     webRtcPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(options, function(error) {
         if(error) return onError(error);
         this.generateOffer(onOffer);
@@ -127,6 +133,10 @@ function onIceCandidate(candidate) {
 	      candidate : candidate
 	   };
 	   sendMessage(message);
+}
+
+function idPerson(message) {
+	console.log("=====> Person detected: " + message.data.idPerson);
 }
 
 function onOffer(error, offerSdp) {

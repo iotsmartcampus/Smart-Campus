@@ -37,7 +37,24 @@
             }
           ]
         }
+      ],
+      "events": [
+        "IdPerson"
       ]
+    }
+  ],
+	"events": [
+    {
+      "properties": [
+        {
+          "name": "idPerson",
+          "doc": "Person identification",
+          "type": "String"
+        }
+      ],
+      "extends": "Media",
+      "name": "IdPerson",
+      "doc": "Event Person Detected"
     }
   ]
 }

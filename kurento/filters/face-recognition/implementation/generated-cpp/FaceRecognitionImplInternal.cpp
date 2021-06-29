@@ -49,6 +49,31 @@ bool
 FaceRecognitionImpl::connect (const std::string &eventType, std::shared_ptr<EventHandler> handler)
 {
 
+  if ("IdPerson" == eventType) {
+    std::weak_ptr<EventHandler> wh = handler;
+
+    sigc::connection conn = signalIdPerson.connect ([ &, wh] (IdPerson event) {
+      std::shared_ptr<EventHandler> lh = wh.lock();
+      if (!lh)
+        return;
+
+      std::shared_ptr<IdPerson> ev_ref (new IdPerson(event));
+      auto object = this->shared_from_this();
+
+      lh->sendEventAsync ([ev_ref, object, lh] {
+        JsonSerializer s (true);
+
+        s.Serialize ("data", ev_ref.get());
+        s.Serialize ("object", object.get());
+        s.JsonValue["type"] = "IdPerson";
+
+        lh->sendEvent (s.JsonValue);
+      });
+    });
+    handler->setConnection (conn);
+    return true;
+  }
+
   return OpenCVFilterImpl::connect (eventType, handler);
 }
 

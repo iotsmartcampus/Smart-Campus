@@ -8,6 +8,8 @@
 #include <memory>
 #include <vector>
 #include "OpenCVFilter.hpp"
+#include "IdPerson.hpp"
+#include <sigc++/sigc++.h>
 
 namespace kurento
 {
