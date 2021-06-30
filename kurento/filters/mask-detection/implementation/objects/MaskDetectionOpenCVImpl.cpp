@@ -40,55 +40,43 @@ MaskDetectionOpenCVImpl::MaskDetectionOpenCVImpl ()
 CascadeClassifier mask_cascade;
 CascadeClassifier face_cascade;
 
-int fun(Mat& img, CascadeClassifier& mask_cascade, CascadeClassifier& face_cascade)
+void MaskDetectionOpenCVImpl::process (cv::Mat &mat)
 {
+	mask_cascade.load(path+"/maskCascade.xml");                  //Mask ON
+	face_cascade.load(path+"/haarcascade_frontalface_alt.xml");  //Mask OFF
+
 	vector<Rect> masks;
 	vector<Rect> faces;
 	Mat frame;
-	cvtColor(img, frame, COLOR_BGR2GRAY);
+	cvtColor(mat, frame, COLOR_BGR2GRAY);
 	mask_cascade.detectMultiScale(frame, masks, 1.2, 7);
 	int dSize = masks.size();
 	for (int i = 0; i < dSize; i++)
 	{
-		rectangle(img, Point(masks[i].x, masks[i].y), Point(masks[i].x + masks[i].width, masks[i].y + masks[i].height),
+		rectangle(mat, Point(masks[i].x, masks[i].y), Point(masks[i].x + masks[i].width, masks[i].y + masks[i].height),
 			Scalar(0, 255, 0), 2, 8);  
-		putText(img, "MASK DETECTED", Point(10, 10), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 255, 0), 2, 8);
-		return 1;
-			
+		putText(mat, "MASK DETECTED", Point(10, 10), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 255, 0), 2, 8);
+		try {
+			MaskDetected event(getSharedFromThis(), MaskDetected::getName(), "ON");
+			signalMaskDetected(event);
+		} catch (std::bad_weak_ptr &e) {
+		}	
 	}
 
 	face_cascade.detectMultiScale(frame, faces, 1.2, 7, 0, Size(80, 80));
 	dSize = faces.size();
 	for (int i = 0; i < dSize; i++)
 	{
-		rectangle(img, Point(faces[i].x, faces[i].y), Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height),
+		rectangle(mat, Point(faces[i].x, faces[i].y), Point(faces[i].x + faces[i].width, faces[i].y + faces[i].height),
 		Scalar(0, 0, 255), 2, 8);
-		putText(img, "MASK NOT DETECTED", Point(10, 10), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 0, 255), 2, 8);
-		return 0;
-			
-	}
-	return -1;
-}
-
-void MaskDetectionOpenCVImpl::process (cv::Mat &mat)
-{
-	mask_cascade.load(path+"/maskCascade.xml");
-	face_cascade.load(path+"/haarcascade_frontalface_alt.xml");
-	int detect = fun(mat, mask_cascade, face_cascade);
-	if(detect == 1){
-		try {
-			MaskDetected event(getSharedFromThis(), MaskDetected::getName(), "ON");
-			signalMaskDetected(event);
-		} catch (std::bad_weak_ptr &e) {
-		}
-	}else if(detect == 0){
+		putText(mat, "MASK NOT DETECTED", Point(10, 10), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(0, 0, 255), 2, 8);
 		try {
 			MaskDetected event(getSharedFromThis(), MaskDetected::getName(), "OFF");
 			signalMaskDetected(event);
 		} catch (std::bad_weak_ptr &e) {
 		}
+			
 	}
-
   
 }
 
