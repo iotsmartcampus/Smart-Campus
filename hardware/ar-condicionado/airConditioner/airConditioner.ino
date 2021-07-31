@@ -28,7 +28,7 @@ int quantChar(String data, char ref);                               //retorna a 
 
 void setup() {        
 
-  Serial.begin(115200);
+  //Serial.begin(115200);
 
   irsend.begin(); //INICIALIZA A FUNÇÃO
 
@@ -56,34 +56,34 @@ void conectaWiFi() {
      return;
   }
 
-  Serial.println();
-  Serial.println("Conectando-se");
-  Serial.print(SSID);
+  //Serial.println();
+  //Serial.println("Conectando-se");
+  //Serial.print(SSID);
 
   WiFi.begin(SSID, PASSWORD); // Conecta na rede WI-FI  
   while (WiFi.status() != WL_CONNECTED) {
       delay(100);
-      Serial.print(".");
+      //Serial.print(".");
   }
   
-  Serial.println();
-  Serial.print("Conectado na rede: ");
-  Serial.print(SSID);  
-  Serial.print("  IP obtido: ");
-  Serial.println(WiFi.localIP()); 
+  //Serial.println();
+  //Serial.print("Conectado na rede: ");
+  //Serial.print(SSID);  
+  //Serial.print("  IP obtido: ");
+  //Serial.println(WiFi.localIP()); 
 }
 
 void conectaMQTT() { 
     while (!MQTT.connected()) {
-        Serial.print("Conectando ao Broker MQTT: ");
-        Serial.println(BROKER_MQTT);
+        //Serial.print("Conectando ao Broker MQTT: ");
+        //Serial.println(BROKER_MQTT);
         if (MQTT.connect(ID_MQTT)) {
-            Serial.println("Conectado ao Broker com sucesso!");
+            //Serial.println("Conectado ao Broker com sucesso!");
             MQTT.subscribe(TOPIC_SUBSCRIBE);
         } 
         else {
-            Serial.println("Nao foi possivel se conectar ao broker.");
-            Serial.println("Nova tentativa de conexao em 10s");
+            //Serial.println("Nao foi possivel se conectar ao broker.");
+            //Serial.println("Nova tentativa de conexao em 10s");
             delay(10000);
         }
     }
@@ -102,7 +102,7 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
        msg += c;
     }
 
-    Serial.println(msg);
+    ////Serial.println(msg);
     cmd = getValue(msg, '|', 0);
     data = getValue(msg, '|', 1);
 
@@ -113,11 +113,11 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
       iData[i] = getValue(data, ',', i).toInt();
     }
     
-    if(cmd == "airConditioner001001001@infrared"){
+    if(cmd == "airConditioner001003001@infrared"){
       
-      MQTT.publish(TOPIC_PUBLISH, "airConditioner001001001@infrared| infrared OK");
+      MQTT.publish(TOPIC_PUBLISH, "airConditioner001003001@infrared| infrared OK");
       irsend.sendRaw(iData,quantData,frequencia);  // PARÂMETROS NECESSÁRIOS PARA ENVIO DO SINAL IR
-      //Serial.println("Comando enviado: liga");
+      ////Serial.println("Comando enviado: liga");
       delay(50); // TEMPO(EM MILISEGUNDOS) DE INTERVALO ENTRE UM COMANDO E OUTRO
       
     }
