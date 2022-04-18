@@ -4,12 +4,12 @@
 #define pinRELE 3 //PINO DIGITAL UTILIZADO PELO RELE
 
 //WiFi
-const char* SSID = "--------";                                           // Nome da rede WiFi
-const char* PASSWORD = "-------";                               // Senha da rede WiFi
+const char* SSID = "";                                           // Nome da rede WiFi
+const char* PASSWORD = "";                               // Senha da rede WiFi
 WiFiClient wifiClient;                        
  
 //MQTT Server
-const char* BROKER_MQTT = "0.0.0.0";                          //URL do broker MQTT
+const char* BROKER_MQTT = "...";                          //URL do broker MQTT
 int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
 
 #define ID_MQTT  "lamp001001001_device"                                   //ID unico e seu

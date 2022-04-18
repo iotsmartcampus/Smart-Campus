@@ -1,3 +1,4 @@
+
 #include <ESP8266WiFi.h> 
 #include <PubSubClient.h>
 #include <DHT.h>
@@ -6,12 +7,12 @@
 #define DHTPIN 3 //PINO DIGITAL UTILIZADO PELO SENSOR
 
 //WiFi
-const char* SSID = "--------";                                           // Nome da rede WiFi
-const char* PASSWORD = "--------";                               // Senha da rede WiFi
+const char* SSID = "";                                           // Nome da rede WiFi
+const char* PASSWORD = "";                               // Senha da rede WiFi
 WiFiClient wifiClient;                        
  
 //MQTT Server
-const char* BROKER_MQTT = "0.0.0.0";                          //URL do broker MQTT
+const char* BROKER_MQTT = "...";                          //URL do broker MQTT
 int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
 
 #define ID_MQTT  "temperatureSensor001001001_device"                                   //ID unico e seu
@@ -33,7 +34,7 @@ DHT dht(DHTPIN, DHTTYPE);
 
 void setup() {        
 
-  //Serial.begin(115200);
+  Serial.begin(115200);
 
   conectaWiFi();
   dht.begin(); //Inicializa o sensor
@@ -61,9 +62,9 @@ void conectaWiFi() {
      return;
   }
 
-  //Serial.println();
-  //Serial.println("Conectando-se");
-  //Serial.print(SSID);
+  Serial.println();
+  Serial.println("Conectando-se");
+  Serial.print(SSID);
 
   WiFi.begin(SSID, PASSWORD); // Conecta na rede WI-FI  
   while (WiFi.status() != WL_CONNECTED) {
@@ -71,17 +72,17 @@ void conectaWiFi() {
       //Serial.print(".");
   }
   
-  //Serial.println();
-  //Serial.print("Conectado na rede: ");
-  //Serial.print(SSID);  
-  //Serial.print("  IP obtido: ");
-  //Serial.println(WiFi.localIP()); 
+  Serial.println();
+  Serial.print("Conectado na rede: ");
+  Serial.print(SSID);  
+  Serial.print("  IP obtido: ");
+  Serial.println(WiFi.localIP()); 
 }
 
 void conectaMQTT() { 
     while (!MQTT.connected()) {
-        //Serial.print("Conectando ao Broker MQTT: ");
-        //Serial.println(BROKER_MQTT);
+        Serial.print("Conectando ao Broker MQTT: ");
+        Serial.println(BROKER_MQTT);
         if (MQTT.connect(ID_MQTT)) {
             //Serial.println("Conectado ao Broker com sucesso!");
         } 
