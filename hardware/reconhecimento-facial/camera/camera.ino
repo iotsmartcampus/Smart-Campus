@@ -34,9 +34,11 @@ IPAddress sub(255,255,255,0);
 const char* BROKER_MQTT = "192.168.11.13";                          //URL do broker MQTT
 int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
 
-#define ID_MQTT  "camera001001001_device"                                   //ID unico e seu
-#define TOPIC_PUBLISH "/scggokgpepnvsb2uv4s40d59oo/camera001001001/attrs"   //Tópico de publicação
-#define TOPIC_SUBSCRIBE "/scggokgpepnvsb2uv4s40d59oo/camera001001001/cmd"   //Tópico de Assinatura
+const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
+
+#define ID_MQTT  ("camera"+ID_PCB+"_device").c_str()                                   //ID unico e seu
+#define TOPIC_PUBLISH ("/scggokgpepnvsb2uv4s40d59oo/camera"+ID_PCB+"/attrs").c_str()   //Tópico de publicação
+#define TOPIC_SUBSCRIBE ("/scggokgpepnvsb2uv4s40d59oo/camera"+ID_PCB+"/cmd").c_str()   //Tópico de Assinatura
 PubSubClient MQTT(wifiClient); 
 
 //pino de flash da camera
@@ -219,7 +221,7 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
     ////Serial.println(value1);
     ////Serial.println(value2);
     
-    if(command == "camera001001001@flash|"){
+    if(command == "camera"+ID_PCB+"@flash|"){
       
       ////Serial.println("FLASH");
   
@@ -232,9 +234,9 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
       digitalWrite(pinFlash, LOW);
       delay(100);
 
-      MQTT.publish(TOPIC_PUBLISH, "camera001001001@flash| Flash ok");
+      MQTT.publish(TOPIC_PUBLISH, ("camera"+ID_PCB+"@flash| Flash ok").c_str());
       
-    }else if(command == "camera001001001@ring|"){
+    }else if(command == "camera"+ID_PCB+"@ring|"){
 
       ////Serial.println("RING");
   
@@ -247,9 +249,9 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
   
       }
 
-      MQTT.publish(TOPIC_PUBLISH, "camera001001001@ring| Ring ok");
+      MQTT.publish(TOPIC_PUBLISH, ("camera"+ID_PCB+"@ring| Ring ok").c_str());
       
-    }else if(command == "camera001001001@print"){
+    }else if(command == "camera"+ID_PCB+"@print"){
 
       ////Serial.println("PRINT");
 
@@ -259,7 +261,7 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
       lcd.setCursor(0, 1);
       lcd.print(value2);
 
-      MQTT.publish(TOPIC_PUBLISH, "camera001001001@print| Print ok");
+      MQTT.publish(TOPIC_PUBLISH, ("camera"+ID_PCB+"@print| Print ok").c_str());
       
     }
 }

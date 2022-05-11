@@ -12,9 +12,11 @@ WiFiClient wifiClient;
 const char* BROKER_MQTT = "...";                          //URL do broker MQTT
 int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
 
-#define ID_MQTT  "lamp001001001_device"                                   //ID unico e seu
-#define TOPIC_PUBLISH "/scggokgpepnvsb2uv4s40d59oo/lamp001001001/attrs"   //Tópico de publicação
-#define TOPIC_SUBSCRIBE "/scggokgpepnvsb2uv4s40d59oo/lamp001001001/cmd"   //Tópico de Assinatura
+const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
+
+#define ID_MQTT  ("lamp"+ID_PCB+"_device").c_str()                                   //ID unico e seu
+#define TOPIC_PUBLISH ("/scggokgpepnvsb2uv4s40d59oo/lamp"+ID_PCB+"/attrs").c_str()   //Tópico de publicação
+#define TOPIC_SUBSCRIBE ("/scggokgpepnvsb2uv4s40d59oo/lamp"+ID_PCB+"/cmd").c_str()   //Tópico de Assinatura
 PubSubClient MQTT(wifiClient);   
 
 void mantemConexoes();                                              //Garante as conexoes WiFi e MQTT
@@ -96,13 +98,13 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
     }
 
     //Serial.println(msg);
-    if(msg == "lamp001001001@on|"){
+    if(msg == "lamp"+ID_PCB+"@on|"){
       digitalWrite(pinRELE, HIGH);
-      MQTT.publish(TOPIC_PUBLISH, "lamp001001001@on| On ok");
+      MQTT.publish(TOPIC_PUBLISH, ("lamp"+ID_PCB+"@on| On ok").c_str());
       MQTT.publish(TOPIC_PUBLISH, "s|ON");
-    }else if(msg == "lamp001001001@off|"){
+    }else if(msg == "lamp"+ID_PCB+"@off|"){
       digitalWrite(pinRELE, LOW);
-      MQTT.publish(TOPIC_PUBLISH, "lamp001001001@off| Off ok");
+      MQTT.publish(TOPIC_PUBLISH, ("lamp"+ID_PCB+"@off| Off ok").c_str());
       MQTT.publish(TOPIC_PUBLISH, "s|OFF");
     }
 }

@@ -22,9 +22,11 @@ WiFiClient wifiClient;
 const char* BROKER_MQTT = "...";                          //URL do broker MQTT
 int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
 
-#define ID_MQTT  "currentSensor001001001_device"                                   //ID unico e seu
-#define TOPIC_PUBLISH "/scggokgpepnvsb2uv4s40d59oo/currentSensor001001001/attrs"   //Tópico de publicação
-#define TOPIC_SUBSCRIBE "/scggokgpepnvsb2uv4s40d59oo/currentSensor001001001/cmd"   //Tópico de Assinatura
+const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
+
+#define ID_MQTT  ("currentSensor"+ID_PCB+"_device").c_str()                                   //ID unico e seu
+#define TOPIC_PUBLISH ("/scggokgpepnvsb2uv4s40d59oo/currentSensor"+ID_PCB+"/attrs").c_str()   //Tópico de publicação
+#define TOPIC_SUBSCRIBE ("/scggokgpepnvsb2uv4s40d59oo/currentSensor"+ID_PCB+"/cmd").c_str()   //Tópico de Assinatura
 PubSubClient MQTT(wifiClient);   
 
 void mantemConexoes();                                              //Garante as conexoes WiFi e MQTT

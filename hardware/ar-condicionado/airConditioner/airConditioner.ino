@@ -14,9 +14,11 @@ WiFiClient wifiClient;
 const char* BROKER_MQTT = "....";                          //URL do broker MQTT
 int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
 
-#define ID_MQTT  "airConditioner001001001_device"                                   //ID unico e seu
-#define TOPIC_PUBLISH "/scggokgpepnvsb2uv4s40d59oo/airConditioner001001001/attrs"   //Tópico de publicação
-#define TOPIC_SUBSCRIBE "/scggokgpepnvsb2uv4s40d59oo/airConditioner001001001/cmd"   //Tópico de Assinatura
+const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
+
+#define ID_MQTT  ("airConditioner"+ID_PCB+"_device").c_str()                                   //ID unico e seu
+#define TOPIC_PUBLISH ("/scggokgpepnvsb2uv4s40d59oo/airConditioner"+ID_PCB+"/attrs").c_str()    //Tópico de publicação
+#define TOPIC_SUBSCRIBE ("/scggokgpepnvsb2uv4s40d59oo/airConditioner"+ID_PCB+"/cmd").c_str()   //Tópico de Assinatura
 PubSubClient MQTT(wifiClient);   
 
 void mantemConexoes();                                              //Garante as conexoes WiFi e MQTT
@@ -113,9 +115,9 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
       iData[i] = getValue(data, ',', i).toInt();
     }
     
-    if(cmd == "airConditioner001001001@infrared"){
+    if(cmd == "airConditioner"+ID_PCB+"@infrared"){
       
-      MQTT.publish(TOPIC_PUBLISH, "airConditioner001001001@infrared| infrared OK");
+      MQTT.publish(TOPIC_PUBLISH, ("airConditioner"+ID_PCB+"@infrared| infrared OK").c_str());
       irsend.sendRaw(iData,quantData,frequencia);  // PARÂMETROS NECESSÁRIOS PARA ENVIO DO SINAL IR
       Serial.println("Comando enviado: liga");
       delay(50); // TEMPO(EM MILISEGUNDOS) DE INTERVALO ENTRE UM COMANDO E OUTRO
