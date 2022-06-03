@@ -79,9 +79,7 @@
 <script>
 export default {
   name: "FormUserDialog",
-  mounted: () => {
-    console.log("Hi there");
-  },
+  mounted: () => {},
   props: {
     dialogData: {
       type: Boolean,

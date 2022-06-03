@@ -24,11 +24,10 @@ import VueSocketIO from 'vue-socket.io'
 
 Vue.config.productionTip = false
 
-Vue.use(new VueSocketIO({
-  debug: true,
-  connection: process.env.VUE_APP_EVENTS_SERVER //options object is Optional
-})
-);
+// Vue.use(new VueSocketIO({
+//   connection: process.env.VUE_APP_EVENTS_SERVER //options object is Optional
+// })
+// );
 
 
 new Vue({

@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:lts
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -6,14 +6,18 @@ WORKDIR /usr/src/app
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY package*.json ./
+COPY package.json ./
 
 RUN npm install
+# copy project files and folders to the current working directory (i.e. 'app' folder)
+COPY . .
+
+RUN npm run build
 # If you are building your code for production
 # RUN npm ci --only=production
 
-# Bundle app source
-ADD . .
+# Bundle app source . .
 
 EXPOSE 3010
-CMD [ "node", "index.js" ]
+
+CMD [ "node", "./dist/server.js" ]
