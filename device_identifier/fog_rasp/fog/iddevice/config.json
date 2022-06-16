@@ -1,0 +1,8 @@
+[{
+	"command": "CONNECT_BROKER",
+	"brokerURL": "http://10.0.0.112:8060/ngsi10"
+}, {
+	"command": "SET_OUTPUTS",
+	"id": "currentSensor001001007",
+	"type": "CurrentSensor"
+}]
