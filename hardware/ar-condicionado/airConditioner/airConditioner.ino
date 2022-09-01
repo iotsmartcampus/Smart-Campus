@@ -9,20 +9,22 @@ unsigned long prevTime = millis();  //Armazena o tempo da ultima mensagem enviad
 
 long msgInterval = 30000;           //intervalo de tempo em milissegundos de quando a placa irá mandar a mensagem de status
 
+
 //WiFi
 const char* SSID = "";                                           // Nome da rede WiFi
 const char* PASSWORD = "";                               // Senha da rede WiFi
 WiFiClient wifiClient;                        
  
 //MQTT Server
-const char* BROKER_MQTT = "";                          //URL do broker MQTT
-int BROKER_PORT = 1883;                                              // Porta do Broker MQTT
+const char* BROKER_MQTT = "...";                          //URL do broker MQTT
+int BROKER_PORT = 1883;                                               // Porta do Broker MQTT
 
 const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
 
 #define ID_MQTT  ("airConditioner"+ID_PCB+"_device").c_str()                                   //ID unico e seu
 #define TOPIC_PUBLISH ("/scggokgpepnvsb2uv4s40d59oo/airConditioner"+ID_PCB+"/attrs").c_str()    //Tópico de publicação
 #define TOPIC_SUBSCRIBE ("/scggokgpepnvsb2uv4s40d59oo/airConditioner"+ID_PCB+"/cmd").c_str()   //Tópico de Assinatura
+
 PubSubClient MQTT(wifiClient);   
 
 void mantemConexoes();                                              //Garante as conexoes WiFi e MQTT
@@ -47,7 +49,8 @@ void loop() {
   unsigned long currentTime = millis();             //Armazena o tempo atual em milisseungos
 
   if( currentTime  - prevTime >= msgInterval){      //Compara o tempo atual e da ultima mensagem enviada saber se é maior que o intervalo para envia-la novamente
-    reportStatus();                                 //Função responsavel por enviar a mensagem de status para o topico
+    Serial.println("s|ON");
+    MQTT.publish(TOPIC_PUBLISH, "s|ON");                         
     prevTime = currentTime;
   }
   
@@ -161,9 +164,4 @@ int quantChar(String data, char ref){
   }
 
   return count;
-}
-
-void reportStatus(){
-  Serial.println("Status: Online");
-  MQTT.publish(TOPIC_PUBLISH, "Status: Online");
 }

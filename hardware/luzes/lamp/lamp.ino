@@ -3,6 +3,14 @@
 
 #define pinRELE 3 //PINO DIGITAL UTILIZADO PELO RELE
 
+
+unsigned long prevTime = millis();  //Armazena o tempo da ultima mensagem enviada em milissegundos
+long msgInterval = 30000;           //intervalo de tempo em milissegundos de quando a placa irá mandar a mensagem de status
+String lampStatus = "OFF";
+String statusMsg;
+
+
+
 //WiFi
 const char* SSID = "";                                           // Nome da rede WiFi
 const char* PASSWORD = "";                               // Senha da rede WiFi
@@ -10,7 +18,7 @@ WiFiClient wifiClient;
  
 //MQTT Server
 const char* BROKER_MQTT = "...";                          //URL do broker MQTT
-int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
+int BROKER_PORT = 1883;                                               // Porta do Broker MQTT
 
 const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
 
@@ -26,7 +34,7 @@ void deviceControl(char* topic, byte* payload, unsigned int length);//recebe e e
 
 void setup() {        
 
-  //Serial.begin(115200);
+  Serial.begin(115200);
   pinMode(pinRELE, OUTPUT);
 
   conectaWiFi();
@@ -35,6 +43,14 @@ void setup() {
 }
 
 void loop() {
+  unsigned long currentTime = millis();             //Armazena o tempo atual em milisseungos
+  if( currentTime  - prevTime >= msgInterval){      //Compara o tempo atual e da ultima mensagem enviada saber se é maior que o intervalo para envia-la novamente
+    statusMsg = "s|" + String(lampStatus); 
+    Serial.println(statusMsg);
+    MQTT.publish(TOPIC_PUBLISH, statusMsg.c_str());                              
+    prevTime = currentTime;
+  }
+  
   mantemConexoes();
   MQTT.loop();
 }
@@ -53,34 +69,34 @@ void conectaWiFi() {
      return;
   }
 
-  //Serial.println();
-  //Serial.println("Conectando-se");
-  //Serial.print(SSID);
+  Serial.println();
+  Serial.println("Conectando-se");
+  Serial.print(SSID);
 
   WiFi.begin(SSID, PASSWORD); // Conecta na rede WI-FI  
   while (WiFi.status() != WL_CONNECTED) {
       delay(100);
-      //Serial.print(".");
+      Serial.print(".");
   }
   
-  //Serial.println();
-  //Serial.print("Conectado na rede: ");
-  //Serial.print(SSID);  
-  //Serial.print("  IP obtido: ");
-  //Serial.println(WiFi.localIP()); 
+  Serial.println();
+  Serial.print("Conectado na rede: ");
+  Serial.print(SSID);  
+  Serial.print("  IP obtido: ");
+  Serial.println(WiFi.localIP()); 
 }
 
 void conectaMQTT() { 
     while (!MQTT.connected()) {
-        //Serial.print("Conectando ao Broker MQTT: ");
-        //Serial.println(BROKER_MQTT);
+        Serial.print("Conectando ao Broker MQTT: ");
+        Serial.println(BROKER_MQTT);
         if (MQTT.connect(ID_MQTT)) {
-            //Serial.println("Conectado ao Broker com sucesso!");
+            Serial.println("Conectado ao Broker com sucesso!");
             MQTT.subscribe(TOPIC_SUBSCRIBE);
         } 
         else {
-            //Serial.println("Nao foi possivel se conectar ao broker.");
-            //Serial.println("Nova tentativa de conexao em 10s");
+            Serial.println("Nao foi possivel se conectar ao broker.");
+            Serial.println("Nova tentativa de conexao em 10s");
             delay(10000);
         }
     }
@@ -97,14 +113,16 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
        msg += c;
     }
 
-    //Serial.println(msg);
+    Serial.println(msg);
     if(msg == "lamp"+ID_PCB+"@on|"){
       digitalWrite(pinRELE, HIGH);
       MQTT.publish(TOPIC_PUBLISH, ("lamp"+ID_PCB+"@on| On ok").c_str());
       MQTT.publish(TOPIC_PUBLISH, "s|ON");
+      lampStatus = "ON";
     }else if(msg == "lamp"+ID_PCB+"@off|"){
       digitalWrite(pinRELE, LOW);
       MQTT.publish(TOPIC_PUBLISH, ("lamp"+ID_PCB+"@off| Off ok").c_str());
       MQTT.publish(TOPIC_PUBLISH, "s|OFF");
+      lampStatus = "OFF";
     }
 }
