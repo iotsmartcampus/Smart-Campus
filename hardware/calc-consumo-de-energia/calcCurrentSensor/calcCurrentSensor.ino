@@ -2,7 +2,7 @@
 #include "PubSubClient.h"
 #include "Arduino.h"
 #include "Wire.h"
-#define I2Caddress 0x48 
+#define I2Caddress 0x48
 #include <WiFiClient.h>
 
 unsigned long prevTime = millis();
@@ -31,12 +31,12 @@ int16_t convertedValue;
 int16_t actualValue[19];
 
 //WiFi
-const char* SSID = "Mizzy";                                           // Nome da rede WiFi
-const char* PASSWORD = "kla231427";                               // Senha da rede WiFi
+const char* SSID = "";                                           // Nome da rede WiFi
+const char* PASSWORD = "";                               // Senha da rede WiFi
 WiFiClient wifiClient;                        
  
 //MQTT Server
-const char* BROKER_MQTT = "192.168.11.141";                          //URL do broker MQTT
+const char* BROKER_MQTT = "";                          //URL do broker MQTT
 int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
 
 const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
