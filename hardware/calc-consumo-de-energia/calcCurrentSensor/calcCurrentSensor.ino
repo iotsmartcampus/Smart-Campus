@@ -2,7 +2,7 @@
 #include "PubSubClient.h"
 #include "Arduino.h"
 #include "Wire.h"
-#define I2Caddress 0x48
+#define I2Caddress 0x48 
 #include <WiFiClient.h>
 
 unsigned long prevTime = millis();
