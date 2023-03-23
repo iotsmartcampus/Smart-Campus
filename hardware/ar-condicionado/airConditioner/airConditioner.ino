@@ -3,7 +3,12 @@
 #include <IRremoteESP8266.h>
 
 IRsend irsend(3); //FUNÇÃO RESPONSÁVEL PELO MÉTODO DE ENVIO DO SINAL IR
-int frequencia = 32; //FREQUÊNCIA DO SINAL IR(32KHz)
+int frequencia = 38; //FREQUÊNCIA DO SINAL IR(38KHz)
+
+unsigned long prevTime = millis();  //Armazena o tempo da ultima mensagem enviada em milissegundos
+
+long msgInterval = 30000;           //intervalo de tempo em milissegundos de quando a placa irá mandar a mensagem de status
+
 
 //WiFi
 const char* SSID = "";                                           // Nome da rede WiFi
@@ -11,14 +16,15 @@ const char* PASSWORD = "";                               // Senha da rede WiFi
 WiFiClient wifiClient;                        
  
 //MQTT Server
-const char* BROKER_MQTT = "....";                          //URL do broker MQTT
-int BROKER_PORT = 1883;                                             // Porta do Broker MQTT
+const char* BROKER_MQTT = "...";                          //URL do broker MQTT
+int BROKER_PORT = 1883;                                               // Porta do Broker MQTT
 
 const String ID_PCB = "001001001";                         // ID referente a placa, MODIFICAR AQUI
 
 #define ID_MQTT  ("airConditioner"+ID_PCB+"_device").c_str()                                   //ID unico e seu
 #define TOPIC_PUBLISH ("/scggokgpepnvsb2uv4s40d59oo/airConditioner"+ID_PCB+"/attrs").c_str()    //Tópico de publicação
 #define TOPIC_SUBSCRIBE ("/scggokgpepnvsb2uv4s40d59oo/airConditioner"+ID_PCB+"/cmd").c_str()   //Tópico de Assinatura
+
 PubSubClient MQTT(wifiClient);   
 
 void mantemConexoes();                                              //Garante as conexoes WiFi e MQTT
@@ -40,6 +46,14 @@ void setup() {
 }
 
 void loop() {
+  unsigned long currentTime = millis();             //Armazena o tempo atual em milisseungos
+
+  if( currentTime  - prevTime >= msgInterval){      //Compara o tempo atual e da ultima mensagem enviada saber se é maior que o intervalo para envia-la novamente
+    Serial.println("s|ON");
+    MQTT.publish(TOPIC_PUBLISH, "s|ON");                         
+    prevTime = currentTime;
+  }
+  
   mantemConexoes();
   MQTT.loop();
 }
@@ -116,7 +130,6 @@ void deviceControl(char* topic, byte* payload, unsigned int length)
     }
     
     if(cmd == "airConditioner"+ID_PCB+"@infrared"){
-      
       MQTT.publish(TOPIC_PUBLISH, ("airConditioner"+ID_PCB+"@infrared| infrared OK").c_str());
       irsend.sendRaw(iData,quantData,frequencia);  // PARÂMETROS NECESSÁRIOS PARA ENVIO DO SINAL IR
       Serial.println("Comando enviado: liga");

@@ -1,0 +1,10 @@
+{
+    "entities": [
+        {
+            "type": "CurrentSensor",
+            "isPattern": false,
+            "id": "Device.Temperature.Device.Temp001"
+        }
+    ],
+    "reference": "http://10.0.0.112:36772"
+}

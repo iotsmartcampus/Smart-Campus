@@ -1,0 +1,59 @@
+body {
+    background: #ebecf1;
+}
+
+.main-panel {
+    overflow-x: hidden;
+    max-height: 100%;
+}
+
+.space {
+    margin: 15px 15px 0px 15px;
+}
+
+.footerCard {
+    justify-content: space-between;
+    padding: 0px 0px;
+}
+
+.card-chart .card-footer {
+    margin-top: 0px;
+    padding: 0px 0px 10px 20px;
+}
+
+.cardBody {
+    color: rgb(88, 88, 88);
+}
+
+.card .card-body {
+    padding: 0px 90px 0px 30px;
+}
+
+.listData {
+    list-style-type: none;
+}
+
+.panel-header {
+    width: 100%;
+    background: linear-gradient(160deg, #000 0%, #104248 100%);
+}
+
+.titleNav {
+    font-size: 1.2em !important;
+}
+
+.chartPower{
+    height: 100%;
+}
+
+.iconDevice {
+    max-width: 60%;
+}
+
+.xLarge {
+    font-size: x-large;
+}
+
+.small {
+    font-size: small;
+}
